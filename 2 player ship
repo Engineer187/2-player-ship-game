@@ -1,0 +1,102 @@
+import pygame
+WIDTH=1000
+LENGTH=800
+NAME="2 player ship"
+screen=pygame.display.set_mode((WIDTH,LENGTH))
+pygame.display.set_caption(NAME)
+RUN=True
+redb=[]
+yellowb=[]
+ship1=pygame.image.load("images\ship red.png")
+ship2=pygame.image.load("images\ship yellow.png")
+bg=pygame.image.load("images\gb.png")
+bg=pygame.transform.scale(bg,(1000,800))
+ship1=pygame.transform.scale(ship1,(80,80))
+ship2=pygame.transform.scale(ship2,(80,80))
+ship1=pygame.transform.rotate(ship1,90)
+ship2=pygame.transform.rotate(ship2,270)
+class Ship(pygame.sprite.Sprite):
+    def __init__(self,x,y,image):
+        super().__init__()
+        self.image = image
+        self.rect=self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y 
+red_ship=Ship(250,420,ship1)
+yellow_ship=Ship(750,420,ship2)
+
+ships=pygame.sprite.Group()
+ships.add(red_ship)
+ships.add(yellow_ship)
+def bullet_move():
+    for bullet in redb :
+        pygame.draw.rect(screen,"red",bullet)
+        bullet.x=bullet.x+1
+        if bullet.x > 1000:
+            redb.remove(bullet)
+    for bullet in yellowb :
+        pygame.draw.rect(screen,"yellow",bullet)
+        bullet.x=bullet.x-1
+        if bullet.x < 0:
+            yellowb.remove(bullet)
+while RUN == True :
+    screen.blit(bg,(0,0))
+    pygame.draw.line(screen,"white",(500,0),(500,800),5)
+    ships.draw(screen)
+    bullet_move()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT :
+            RUN = False
+        if event.type ==pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                bullet=pygame.Rect(red_ship.rect.right,red_ship.rect.top,10,5)
+                redb.append(bullet)
+    
+            if event.key == pygame.K_KP_0:
+                bullet=pygame.Rect(yellow_ship.rect.left,yellow_ship.rect.top,10,5)
+                yellowb.append(bullet)
+    
+    if red_ship.rect.right > 500 :
+        red_ship.rect.right = 500
+    if red_ship.rect.top < 0 :
+        red_ship.rect.top = 0
+    if red_ship.rect.left < 0 :
+        red_ship.rect.left = 0
+    if red_ship.rect.bottom > 800 :
+        red_ship.rect.bottom = 800
+
+    if yellow_ship.rect.right > 1000 :
+        yellow_ship.rect.right = 1000
+    if yellow_ship.rect.top < 0 :
+        yellow_ship.rect.top = 0
+    if yellow_ship.rect.left < 500 :
+        yellow_ship.rect.left = 500
+    if yellow_ship.rect.bottom > 800 :
+        yellow_ship.rect.bottom = 800
+
+    keyspresed=pygame.key.get_pressed()
+    if keyspresed[pygame.K_w] :
+        red_ship.rect.y=red_ship.rect.y-1
+    if keyspresed[pygame.K_a] :
+        red_ship.rect.x=red_ship.rect.x-1
+    if keyspresed[pygame.K_d] :
+        red_ship.rect.x=red_ship.rect.x+1
+    if keyspresed[pygame.K_s] :
+        red_ship.rect.y=red_ship.rect.y+1
+    if keyspresed[pygame.K_UP] :
+        yellow_ship.rect.y=yellow_ship.rect.y-1
+    if keyspresed[pygame.K_LEFT] :
+        yellow_ship.rect.x=yellow_ship.rect.x-1
+    if keyspresed[pygame.K_RIGHT] :
+        yellow_ship.rect.x=yellow_ship.rect.x+1
+    if keyspresed[pygame.K_DOWN] :
+        yellow_ship.rect.y=yellow_ship.rect.y+1
+
+
+
+
+
+
+
+
+    pygame.display.update()
